@@ -12,25 +12,28 @@ namespace client
 {
     class Program
     {
-        // const string serverAddress = "http://localhost:5000";
-        // const string serverAddress = "http://34.122.133.56";
-        const string serverAddress = "https://mygrpc-62b5pp6dlq-uc.a.run.app";
-
         static async Task Main(string[] args)
         {
-            // // see: https://grpc.github.io/grpc/csharp/api/Grpc.Auth.GoogleGrpcCredentials.html
+            if (args.Length < 2)
+            {
+                ShowUsage();
+                return;
+            }
 
-            var token = await GetTokenAsync();
+            string serverAddress = args[0];
+            string name = args[1];
+
+            var token = await GetTokenAsync(serverAddress);
             var channel = CreateAuthenticatedChannel(serverAddress, token);
 
             var client = new Greeter.GreeterClient(channel);
             var reply = await client.SayHelloAsync(
-                new HelloRequest {Name = "Jason"}
+                new HelloRequest {Name = name}
             );
             System.Console.WriteLine("Greeting " + reply.Message);           
         }
 
-        private static async Task<string> GetTokenAsync()
+        private static async Task<string> GetTokenAsync(string serverAddress)
         {
             GoogleCredential creds = GoogleCredential.GetApplicationDefault();
             var oidcToken = await creds.GetOidcTokenAsync(
@@ -59,5 +62,11 @@ namespace client
             });
             return channel;
         }        
+
+        private static void ShowUsage()
+        {
+            System.Console.WriteLine("client {server} {reply-name}");
+            System.Console.WriteLine("  eg. client https://localhost:5001 Jason");
+        }
     }
 }
