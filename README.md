@@ -14,7 +14,7 @@ The server is deployed to Google CloudRun and uses *"Require authentication"* wi
 
 ### Deploy the server
 
-1. Build the server conatiner by executing:
+1. Build the server container by executing:
     ```bash 
     docker build --force-rm --no-cache -t gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1 -f Dockerfile .
     ```
