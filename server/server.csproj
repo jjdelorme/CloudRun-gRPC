@@ -3,7 +3,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <PublishSingleFile>True</PublishSingleFile>
     <PublishTrimmed>True</PublishTrimmed>
-    <PublishReadyToRun>True</PublishReadyToRun>
+    <PublishReadyToRun>False</PublishReadyToRun>
     <CrossGenDuringPublish>False</CrossGenDuringPublish>
   </PropertyGroup>
 
