@@ -91,3 +91,26 @@ The magic of this is captured in this ```Program.cs``` snippet where a bearer to
             return channel;
         } 
 ```
+## .NET Core Optimizations
+
+Because CloudRun supports scale to 0, startup time for a container can be important.  .NET Core offers some great advantages that allow you to minimize container size, which can benefit startup time significantly.  A good blog post on this is [here](https://www.pragmacoders.net/how-to-get-a-net-5-docker-image-below-40-mb/).  For this project, the container is **~50.7mb**.  The application is deployed as a self-contained executable on Alpine linux.
+
+This is achieved by setting these properties in the ```server.csproj```:
+
+~~~xml
+  <PropertyGroup>  
+    ...
+    <PublishSingleFile>True</PublishSingleFile>
+    <PublishTrimmed>True</PublishTrimmed>
+    ...
+  </PropertyGroup>
+~~~
+
+And when building in the docker file:
+~~~dockerfile
+# Setting the RID to Alpine and self-contained
+RUN dotnet publish -r linux-musl-x64 --self-contained true -c Release -o /deploy
+...
+# Base the runtime container on Alpine:
+FROM mcr.microsoft.com/dotnet/runtime-deps:5.0-alpine-amd64 AS runtime
+~~~
