@@ -8,8 +8,8 @@ The server is deployed to Google CloudRun and uses *"Require authentication"* wi
 ### Prerequisites
 1. Clone this repo locally.
 1. Create a project and enable the CloudRun API from [here](https://console.cloud.google.com/flows/enableapi?apiid=run.googleapis.com)
-1. See the docs on [.NET development environment](https://cloud.google.com/dotnet/docs/setup) instructions to setup a service account, download a service acount key and create the ```GOOGLE_APPLICATION_CREDENTIALS``` environment variable that will be used by the client to connect.
-    * Set the environment variable ```GOOGLE_PROJECT_ID``` to the project id you just created.
+1. See the docs on [.NET development environment](https://cloud.google.com/dotnet/docs/setup) instructions to setup a service account, download a service account key and create the ```GOOGLE_APPLICATION_CREDENTIALS``` environment variable that will be used by the client to connect.
+1. Set the environment variable ```GOOGLE_PROJECT_ID``` to the project id you just created.
 1. Follow [these steps](https://cloud.google.com/container-registry/docs/quickstart) to enable the container registry and configure docker authentication so that you can push an image.
 
 ### Deploy the server
@@ -31,12 +31,12 @@ The server is deployed to Google CloudRun and uses *"Require authentication"* wi
 
     Service URL: https://mygrpc-xxxxxxxxxx.a.run.app
     ```
-1. Take note of the **Service URL** that was created above.
+1. Take note of the **Service URL** that was created above
 
     * Alternatively you can deploy using the console and choose **Require authentication**
 
         ![Require authentication](cloudrun-auth.png)
-1. Ensure that your service account has the ```roles/run.invoker``` role for your CloudRun.
+1. Ensure that your service account has the ```roles/run.invoker``` role for your CloudRun service
     ```bash
     gcloud run services add-iam-policy-binding mygrpc \
         --member="[YOUR_GOOGLE_SERVICE_ACCOUNT]" \
@@ -47,7 +47,7 @@ The server is deployed to Google CloudRun and uses *"Require authentication"* wi
 
 The client requires 2 parameters:
 * Service URL (from above)
-* The reply name you want the server to return with (simple concatination).
+* The reply name you want the server to return with
 ```bash
 # Change into the client directory
 cd ./client
