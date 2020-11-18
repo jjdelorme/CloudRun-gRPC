@@ -1,6 +1,6 @@
 # Authenticated gRPC with C# on CloudRun 
 
-This sample code demonstrates how to create a simple .NET Core 5 C# gRPC server and client.  
+This sample code demonstrates how to create an **authenticated** .NET Core 5 C# gRPC server and client.  Using TLS for an authenticated service is what makes this different from the [Getting started with .NET](https://cloud.google.com/dotnet/docs/getting-started) sample already available from Google and is based on the [Microsoft tutorial](https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start?view=aspnetcore-5.0&tabs=visual-studio-code).
 
 ## Authentication
 The server is deployed to Google CloudRun and uses *"Require authentication"* with TLS.  CloudRun handles TLS termination so it is important that the server implementation listens on port 80 **without TLS**.
@@ -57,4 +57,37 @@ dotnet run -- https://mygrpc-xxxxxxxxxx.a.run.app Jason
 
 # You should see this reply:
 Greeting Hello Jason
+```
+
+## How the client authenticates to CloudRun
+The purpose for creating yet another example of gRPC with C# here is to help document how to use TLS and allow CloudRun to authenticate your client request.  
+
+The magic of this is captured in this ```Program.cs``` snippet where a bearer token is obtained from the default google credentials and appended to the metadata (headers) of each request.
+
+```c#
+        private static async Task<GrpcChannel> CreateChannelAsync(string address)
+        {
+            // only create authenticated channel for https
+            if (address.StartsWith("http:"))
+                return GrpcChannel.ForAddress(address);
+
+            var token = await GetTokenAsync(address);
+
+            var credentials = CallCredentials.FromInterceptor((context, metadata) =>
+            {
+                if (!string.IsNullOrEmpty(token))
+                {
+                    metadata.Add("Authorization", $"Bearer {token}");
+                }
+                return Task.CompletedTask;
+            });
+
+            // SslCredentials is used here because this channel is using TLS.
+            // CallCredentials can't be used with ChannelCredentials.Insecure on non-TLS channels.
+            var channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
+            {
+                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+            });
+            return channel;
+        } 
 ```
