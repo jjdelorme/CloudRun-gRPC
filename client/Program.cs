@@ -68,7 +68,7 @@ namespace CloudRunGrpc.Client
         private static void ShowUsage()
         {
             System.Console.WriteLine("client {server} {reply-name}");
-            System.Console.WriteLine("  eg. client https://localhost:5001 Jason");
+            System.Console.WriteLine("  eg. client http://localhost:5000 Jason");
         }
     }
 }
