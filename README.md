@@ -6,19 +6,19 @@ This sample code demonstrates how to create a simple .NET Core 5 C# gRPC server 
 The server is deployed to Google CloudRun and uses *"Require authentication"* with TLS.  CloudRun handles TLS termination so it is important that the server implementation listens on port 80 **without TLS**.
 
 ### Prerequisites
-1. Clone this repo locally.
+1. Clone this repo locally
 1. Create a project and enable the CloudRun API from [here](https://console.cloud.google.com/flows/enableapi?apiid=run.googleapis.com)
-1. See the docs on [.NET development environment](https://cloud.google.com/dotnet/docs/setup) instructions to setup a service account, download a service account key and create the ```GOOGLE_APPLICATION_CREDENTIALS``` environment variable that will be used by the client to connect.
-1. Set the environment variable ```GOOGLE_PROJECT_ID``` to the project id you just created.
-1. Follow [these steps](https://cloud.google.com/container-registry/docs/quickstart) to enable the container registry and configure docker authentication so that you can push an image.
+1. See the docs on [.NET development environment](https://cloud.google.com/dotnet/docs/setup) instructions to setup a service account, download a service account key and create the ```GOOGLE_APPLICATION_CREDENTIALS``` environment variable that will be used by the client to connect
+1. Set the environment variable ```GOOGLE_PROJECT_ID``` to the project id you just created
+1. Follow [these steps](https://cloud.google.com/container-registry/docs/quickstart) to enable the container registry and configure docker authentication so that you can push an image
 
 ### Deploy the server
 
-1. Build the server container by executing:
+1. Build the server container by executing
     ```bash 
     docker build --force-rm --no-cache -t gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1 -f Dockerfile .
     ```
-1. Push the container to your registry:
+1. Push the container to your registry
     ```bash 
     docker push gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1
     ```
