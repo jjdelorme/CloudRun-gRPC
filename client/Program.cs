@@ -18,24 +18,46 @@ namespace client
 
         static async Task Main(string[] args)
         {
-            // var oidcOptions = OidcTokenOptions.FromTargetAudience(serverAddress);
-
             // // see: https://grpc.github.io/grpc/csharp/api/Grpc.Auth.GoogleGrpcCredentials.html
 
+            var token = await GetTokenAsync();
+            var channel = CreateAuthenticatedChannel(serverAddress, token);
+
+            var client = new Greeter.GreeterClient(channel);
+            var reply = await client.SayHelloAsync(
+                new HelloRequest {Name = "Jason"}
+            );
+            System.Console.WriteLine("Greeting " + reply.Message);           
+        }
+
+        private static async Task<string> GetTokenAsync()
+        {
             GoogleCredential creds = GoogleCredential.GetApplicationDefault();
             var oidcToken = await creds.GetOidcTokenAsync(
                 OidcTokenOptions.FromTargetAudience(serverAddress)
             );
-            var bearerToken = await oidcToken.GetAccessTokenAsync();
-            var headers = new Metadata();
-            headers.Add("Authorization", $"Bearer {bearerToken}");
-
-            var channel = GrpcChannel.ForAddress(serverAddress);
-            var client = new Greeter.GreeterClient(channel);
-            var reply = await client.SayHelloAsync(
-                new HelloRequest {Name = "Jason"}, headers 
-            );
-            System.Console.WriteLine("Greeting " + reply.Message);           
+            var token = await oidcToken.GetAccessTokenAsync();
+            return token;
         }
+
+        private static GrpcChannel CreateAuthenticatedChannel(string address, string token)
+        {
+            var credentials = CallCredentials.FromInterceptor((context, metadata) =>
+            {
+                if (!string.IsNullOrEmpty(token))
+                {
+                    metadata.Add("Authorization", $"Bearer {token}");
+                }
+                return Task.CompletedTask;
+            });
+
+            // SslCredentials is used here because this channel is using TLS.
+            // CallCredentials can't be used with ChannelCredentials.Insecure on non-TLS channels.
+            var channel = GrpcChannel.ForAddress(address, new GrpcChannelOptions
+            {
+                Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+            });
+            return channel;
+        }        
     }
 }
