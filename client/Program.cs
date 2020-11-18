@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Grpc;
 using Grpc.Net.Client;
 using Grpc.Core;
-using Grpc.Auth;
 using Google.Apis.Auth.OAuth2;
-using cloudrun;
 
-namespace client
+namespace CloudRunGrpc.Client
 {
     class Program
     {
@@ -23,8 +19,7 @@ namespace client
             string serverAddress = args[0];
             string name = args[1];
 
-            var token = await GetTokenAsync(serverAddress);
-            var channel = CreateAuthenticatedChannel(serverAddress, token);
+            var channel = await CreateChannelAsync(serverAddress);
 
             var client = new Greeter.GreeterClient(channel);
             var reply = await client.SayHelloAsync(
@@ -33,18 +28,14 @@ namespace client
             System.Console.WriteLine("Greeting " + reply.Message);           
         }
 
-        private static async Task<string> GetTokenAsync(string serverAddress)
+        private static async Task<GrpcChannel> CreateChannelAsync(string address)
         {
-            GoogleCredential creds = GoogleCredential.GetApplicationDefault();
-            var oidcToken = await creds.GetOidcTokenAsync(
-                OidcTokenOptions.FromTargetAudience(serverAddress)
-            );
-            var token = await oidcToken.GetAccessTokenAsync();
-            return token;
-        }
+            // only create authenticated channel for https
+            if (address.StartsWith("http:"))
+                return GrpcChannel.ForAddress(address);
 
-        private static GrpcChannel CreateAuthenticatedChannel(string address, string token)
-        {
+            var token = await GetTokenAsync(address);
+
             var credentials = CallCredentials.FromInterceptor((context, metadata) =>
             {
                 if (!string.IsNullOrEmpty(token))
@@ -61,7 +52,18 @@ namespace client
                 Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
             });
             return channel;
-        }        
+        }       
+
+        private static async Task<string> GetTokenAsync(string serverAddress)
+        {
+            GoogleCredential creds = GoogleCredential.GetApplicationDefault();
+            var oidcToken = await creds.GetOidcTokenAsync(
+                OidcTokenOptions.FromTargetAudience(serverAddress)
+            );
+            var token = await oidcToken.GetAccessTokenAsync();
+            return token;
+        }
+
 
         private static void ShowUsage()
         {

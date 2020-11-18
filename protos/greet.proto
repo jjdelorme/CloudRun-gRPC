@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "cloudrun";
+option csharp_namespace = "CloudRunGrpc";
 
 package greet;
 
