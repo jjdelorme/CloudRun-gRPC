@@ -14,6 +14,13 @@ The server is deployed to Google CloudRun and uses *"Require authentication"* wi
 
 ### Deploy the server
 
+(Unique to SecretManager Branch)
+1. Run docker build from root dev directory as such to have ./grpc and ./SecretConfigurationProvider available.
+    ```bash 
+    cd ~\dev # Your development directory
+    docker build --force-rm --no-cache -t gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1 -f ./grpc/Dockerfile .
+    ```
+(If you're not using the SecretManager branch)
 1. Build the server container by executing
     ```bash 
     docker build --force-rm --no-cache -t gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1 -f Dockerfile .
