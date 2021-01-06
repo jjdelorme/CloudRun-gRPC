@@ -28,7 +28,7 @@ The server is deployed to Google CloudRun and uses *"Require authentication"* wi
     docker build --force-rm --no-cache -t gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1 -f Dockerfile .
     ```
 
-### Test the Server localy
+### Test the server locally
 
 ```
 docker run --rm -it -p 5000:80 gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1.0
@@ -41,7 +41,7 @@ If you're using the SecretManager, you'll need to pass in the app credentials, y
 docker run -v ~/dev/grpc:/gcp -e GOOGLE_APPLICATION_CREDENTIALS=/gcp/google-key.json --rm -it -p 5000:80 gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1.0
 ```
 
-### Deploy the Server to Cloud Run
+### Deploy the server to Google Cloud Run
 
 1. Push the container to your registry
     ```bash 
