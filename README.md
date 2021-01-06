@@ -12,7 +12,7 @@ The server is deployed to Google CloudRun and uses *"Require authentication"* wi
 1. Set the environment variable ```GOOGLE_PROJECT_ID``` to the project id you just created
 1. Follow [these steps](https://cloud.google.com/container-registry/docs/quickstart) to enable the container registry and configure docker authentication so that you can push an image
 
-### Deploy the server
+### Build the server
 
 (Unique to SecretManager Branch)
 1. Run docker build from root dev directory as such to have ./grpc and ./SecretConfigurationProvider available.
@@ -27,6 +27,22 @@ The server is deployed to Google CloudRun and uses *"Require authentication"* wi
     ```bash 
     docker build --force-rm --no-cache -t gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1 -f Dockerfile .
     ```
+
+### Test the Server localy
+
+```
+docker run --rm -it -p 5000:80 gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1.0
+```
+
+(Unique to SecretManager Branch)
+If you're using the SecretManager, you'll need to pass in the app credentials, you can do so with this:
+
+```
+docker run -v ~/dev/grpc:/gcp -e GOOGLE_APPLICATION_CREDENTIALS=/gcp/google-key.json --rm -it -p 5000:80 gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1.0
+```
+
+### Deploy the Server to Cloud Run
+
 1. Push the container to your registry
     ```bash 
     docker push gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1
