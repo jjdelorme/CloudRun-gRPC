@@ -1,6 +1,6 @@
 # Authenticated gRPC with C# on CloudRun 
 
-This sample code demonstrates how to create an **authenticated** .NET Core 5 C# gRPC server and client.  Using TLS for an authenticated service is what makes this different from the [Getting started with .NET](https://cloud.google.com/dotnet/docs/getting-started) sample already available from Google and is based on the [Microsoft tutorial](https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start?view=aspnetcore-5.0&tabs=visual-studio-code).
+This sample code demonstrates how to create an **authenticated** .NET Core 5 C# gRPC server and client.  Using TLS for an authenticated service is what makes this different from the [Getting started with .NET](https://cloud.google.com/dotnet/docs/setup) sample already available from Google and is based on the [Microsoft tutorial](https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start?view=aspnetcore-5.0&tabs=visual-studio-code).
 
 ## Authentication
 The server is deployed to Google CloudRun and uses *"Require authentication"* with TLS.  CloudRun handles TLS termination so it is important that the server implementation listens on port 80 **without TLS**.
