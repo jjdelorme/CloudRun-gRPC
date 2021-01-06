@@ -20,6 +20,8 @@ The server is deployed to Google CloudRun and uses *"Require authentication"* wi
     cd ~\dev # Your development directory
     docker build --force-rm --no-cache -t gcr.io/$GOOGLE_PROJECT_ID/mygrpc:v1 -f ./grpc/Dockerfile .
     ```
+1. Add the ```Secret Manager Secret Accessor``` role to the Service Account for the Cloud Run app.
+
 (If you're not using the SecretManager branch)
 1. Build the server container by executing
     ```bash 
