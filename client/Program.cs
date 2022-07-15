@@ -17,13 +17,14 @@ namespace CloudRunGrpc.Client
             }
 
             string serverAddress = args[0];
-            string name = args[1];
 
             var channel = await CreateChannelAsync(serverAddress);
 
+            string[] names = args[1..];
+
             var client = new Greeter.GreeterClient(channel);
             var reply = await client.SayHelloAsync(
-                new HelloRequest {Name = name}
+                new HelloRequest {Names = { names } }
             );
             System.Console.WriteLine("Greeting " + reply.Message);           
         }

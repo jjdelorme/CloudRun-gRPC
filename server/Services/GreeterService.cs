@@ -15,9 +15,13 @@ namespace CloudRunGrpc
 
         public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
         {
+            string message = "Hello ";
+            foreach (var name in request.Names)
+                message += name + ", ";
+
             return Task.FromResult(new HelloReply
             {
-                Message = "Hello " + request.Name
+                Message = message
             });
         }
     }

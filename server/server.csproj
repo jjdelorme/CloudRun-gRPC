@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>  
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7</TargetFramework>
     <PublishSingleFile>True</PublishSingleFile>
     <PublishTrimmed>True</PublishTrimmed>
     <PublishReadyToRun>False</PublishReadyToRun>
